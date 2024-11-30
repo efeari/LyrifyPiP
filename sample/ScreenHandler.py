@@ -38,7 +38,7 @@ class ScreenHandler:
         self.m_img.save(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
         self.m_img.putalpha(alphaValue)
         self.m_img = self.m_img.filter(ImageFilter.BLUR)
-        self.m_img = self.m_img.resize((self.screenWidth,self.screenHeight))
+        self.m_img = self.m_img.resize((self.screenWidth,self.screenHeight), Image.ADAPTIVE)
 
         # Set the background
         self.m_canvas = tk.Canvas(self.m_root, width=self.screenWidth, height=self.screenHeight)
