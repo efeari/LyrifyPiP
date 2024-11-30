@@ -1,0 +1,35 @@
+name: Pylint
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint
+
+    - name: Create pylint configuration with camelCase naming
+      run: |
+        echo "[MASTER]" > .pylintrc
+        echo "disable=invalid-name" >> .pylintrc
+        echo "[FORMAT]" >> .pylintrc
+        echo "variable-rgx=[a-z_][a-zA-Z0-9]*" >> .pylintrc
+        echo "function-rgx=[a-z_][a-zA-Z0-9]*" >> .pylintrc
+        echo "class-rgx=[A-Z_][a-zA-Z0-9]*" >> .pylintrc
+
+    - name: Analysing the code with pylint
+      run: |
+        pylint $(git ls-files '*.py')
