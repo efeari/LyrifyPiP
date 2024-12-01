@@ -6,7 +6,7 @@ from PIL import ImageTk, Image, ImageFilter
 from .config import *
 
 class ScreenHandler:
-    def __init__(self, defaultScreenWidth: int = 0, defaultScreenHeight: int = 0):
+    def __init__(self, defaultScreenWidth: int = 480, defaultScreenHeight: int = 800):
         """       
         Constructor for the ScreenHandler
         m_root is the main tkinter object.
@@ -52,12 +52,9 @@ class ScreenHandler:
 
         self.m_root.bind("<B1-Motion>", lambda event:  self.m_root.geometry(f'+{event.x_root}+{event.y_root}'))
 
-        icon_path = os.path.join("assets", "icons", "close.png")
-        close_img = Image.open(icon_path)
-        close_img = close_img.resize((30, 30))
-        close_button = tk.Label(self.m_root, image=ImageTk.PhotoImage(close_img), relief="flat", cursor="hand2")
-        close_button.place(x=self.screenWidth - 30, y=0)
-        close_button.bind("<Button-1>", lambda event: self.m_root.destroy())
+        self.createCloseButton()
+        self.m_canvas.bind("<Enter>", self.showIcon)
+        self.m_canvas.bind("<Leave>", self.hideIcon)
 
     def move(self, event):
         x = self.m_root.winfo_pointerx()
@@ -66,6 +63,31 @@ class ScreenHandler:
 
     def startMainLoop(self):
         self.m_root.mainloop()
+
+    def createCloseButton(self):
+        icon_size = 15  # Size of the 'X'
+        padding = 10    # Distance from the screen edges
+
+        x1 = self.screenWidth - icon_size - padding
+        y1 = padding
+        x2 = self.screenWidth - padding
+        y2 = icon_size + padding
+
+        self.line1 = self.m_canvas.create_line(x1, y1, x2, y2, width=2, state=tk.HIDDEN)
+        self.line2 = self.m_canvas.create_line(x1, y2, x2, y1, width=2, state=tk.HIDDEN)
+
+        self.m_canvas.tag_bind(self.line1, "<Button-1>", lambda event: self.m_root.destroy())
+        self.m_canvas.tag_bind(self.line2, "<Button-1>", lambda event: self.m_root.destroy())
+
+    def showIcon(self, event):
+        """Make the 'X' icon visible."""
+        self.m_canvas.itemconfig(self.line1, state=tk.NORMAL)
+        self.m_canvas.itemconfig(self.line2, state=tk.NORMAL)
+
+    def hideIcon(self, event):
+        """Make the 'X' icon invisible."""
+        self.m_canvas.itemconfig(self.line1, state=tk.HIDDEN)
+        self.m_canvas.itemconfig(self.line2, state=tk.HIDDEN)
 
     def onClosing(self):
         """
@@ -101,7 +123,7 @@ class ScreenHandler:
         """
         self.m_img = Image.open(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
         self.m_img.putalpha(alphaValue)
-        self.m_img = self.m_img.filter(ImageFilter.BLUR)
+        self.m_img = self.m_img.filter(ImageFilter.GaussianBlur(radius=10))
         self.m_img = self.m_img.resize((self.screenWidth, self.screenHeight), Image.ADAPTIVE)
         self.m_albumImage = ImageTk.PhotoImage(self.m_img)
         self.m_canvas.itemconfig(self.imgContainer, image=self.m_albumImage)
