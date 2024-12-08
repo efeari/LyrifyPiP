@@ -6,7 +6,7 @@ from PIL import ImageTk, Image, ImageFilter
 from .config import *
 
 class ScreenHandler:
-    def __init__(self, defaultScreenWidth: int = 480, defaultScreenHeight: int = 800):
+    def __init__(self, defaultScreenWidth: int = 480, defaultScreenHeight: int = 480):
         """       
         Constructor for the ScreenHandler
         m_root is the main tkinter object.
@@ -30,7 +30,7 @@ class ScreenHandler:
             self.m_root.overrideredirect(True)
             self.m_root.attributes("-topmost", True)
 
-        self.textSize = self.screenHeight * self.screenWidth // resolutionToTextRatio
+        self.textSize = self.screenWidth // resolutionToTextRatio
         self.m_root.protocol("WM_DELETE_WINDOW", self.onClosing)
 
         # Create the image

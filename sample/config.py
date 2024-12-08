@@ -10,7 +10,7 @@ SPOTIPY_CLIENT_SECRET = ""
 SPOTIPY_USERID = ""
 
 alphaValue = 200
-resolutionToTextRatio = 73000
+resolutionToTextRatio = 30
 
 CONST_DEFAULT_UPDATE_TRACK_FREQUENCY = 0.1
 CONST_LYRICS_PROVIDER = "Musixmatch"
