@@ -17,44 +17,42 @@ class ScreenHandler:
         """
         self.m_root = tk.Tk()
         
-        self.screenWidth = defaultScreenWidth
-        self.screenHeight = defaultScreenHeight
+        self.m_screenWidth = defaultScreenWidth
+        self.m_screenHeight = defaultScreenHeight
         
-        if (self.screenWidth == 0 and self.screenHeight == 0):
+        if (self.m_screenWidth == 0 and self.m_screenHeight == 0):
             self.m_root.attributes('-fullscreen', True)
             self.getCurrScreenGeometry()
-            self.screenWidth = self.m_root.winfo_screenwidth()
-            self.screenHeight = self.m_root.winfo_screenheight()
+            self.m_screenWidth = self.m_root.winfo_screenwidth()
+            self.m_screenHeight = self.m_root.winfo_screenheight()
         else:
-            self.m_root.geometry("%dx%d" % (self.screenWidth, self.screenHeight))
+            self.m_root.geometry("%dx%d" % (self.m_screenWidth, self.m_screenHeight))
             self.m_root.overrideredirect(True)
             self.m_root.attributes("-topmost", True)
 
-        self.textSize = self.screenWidth // resolutionToTextRatio
+        self.m_textSize = self.m_screenWidth // resolutionToTextRatio
         self.m_root.protocol("WM_DELETE_WINDOW", self.onClosing)
 
         # Create the image
-        self.m_img = Image.new('RGB', (self.screenWidth, self.screenHeight), "black")
+        self.m_img = Image.new('RGB', (self.m_screenWidth, self.m_screenHeight), "black")
         self.m_img.save(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
         self.m_img.putalpha(alphaValue)
         self.m_img = self.m_img.filter(ImageFilter.BLUR)
-        self.m_img = self.m_img.resize((self.screenWidth,self.screenHeight), Image.ADAPTIVE)
+        self.m_img = self.m_img.resize((self.m_screenWidth,self.m_screenHeight), Image.ADAPTIVE)
 
         # Set the background
-        self.m_canvas = tk.Canvas(self.m_root, width=self.screenWidth, height=self.screenHeight)
+        self.m_canvas = tk.Canvas(self.m_root, width=self.m_screenWidth, height=self.m_screenHeight)
         self.m_canvas.pack(expand=True, fill=tk.BOTH)
         self.m_albumImage = ImageTk.PhotoImage(self.m_img)
-        self.imgContainer = self.m_canvas.create_image(0, 0, image=self.m_albumImage, anchor=tk.NW)
+        self.m_imgContainer = self.m_canvas.create_image(0, 0, image=self.m_albumImage, anchor=tk.NW)
 
-        self.textContainer = self.m_canvas.create_text(self.screenWidth/2, self.screenHeight/2, text="",font=("Purisa", self.textSize), width=self.screenWidth)
+        self.m_textContainer = self.m_canvas.create_text(self.m_screenWidth/2, self.m_screenHeight/2, text="",font=("Purisa", self.m_textSize), width=self.m_screenWidth)
         
         self.m_NoneReceived = False
 
         self.m_root.bind("<B1-Motion>", lambda event:  self.m_root.geometry(f'+{event.x_root}+{event.y_root}'))
 
         self.createCloseButton()
-        self.m_canvas.bind("<Enter>", self.showIcon)
-        self.m_canvas.bind("<Leave>", self.hideIcon)
 
     def move(self, event):
         x = self.m_root.winfo_pointerx()
@@ -65,19 +63,25 @@ class ScreenHandler:
         self.m_root.mainloop()
 
     def createCloseButton(self):
-        icon_size = 15  # Size of the 'X'
-        padding = 10    # Distance from the screen edges
+        """
+        Creates an close button which becomes visible when hovered on the window only
+        """
+        icon_size = 15 
+        padding = 10
 
-        x1 = self.screenWidth - icon_size - padding
+        x1 = self.m_screenWidth - icon_size - padding
         y1 = padding
-        x2 = self.screenWidth - padding
+        x2 = self.m_screenWidth - padding
         y2 = icon_size + padding
 
         self.line1 = self.m_canvas.create_line(x1, y1, x2, y2, width=2, state=tk.HIDDEN)
         self.line2 = self.m_canvas.create_line(x1, y2, x2, y1, width=2, state=tk.HIDDEN)
 
-        self.m_canvas.tag_bind(self.line1, "<Button-1>", lambda event: self.m_root.destroy())
-        self.m_canvas.tag_bind(self.line2, "<Button-1>", lambda event: self.m_root.destroy())
+        self.m_canvas.tag_bind(self.line1, "<Button-1>", lambda event: self.onClosing())
+        self.m_canvas.tag_bind(self.line2, "<Button-1>", lambda event: self.onClosing())
+
+        self.m_canvas.bind("<Enter>", self.showIcon)
+        self.m_canvas.bind("<Leave>", self.hideIcon)
 
     def showIcon(self, event):
         """Make the 'X' icon visible."""
@@ -124,10 +128,10 @@ class ScreenHandler:
         self.m_img = Image.open(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
         self.m_img.putalpha(alphaValue)
         self.m_img = self.m_img.filter(ImageFilter.GaussianBlur(radius=10))
-        self.m_img = self.m_img.resize((self.screenWidth, self.screenHeight), Image.ADAPTIVE)
+        self.m_img = self.m_img.resize((self.m_screenWidth, self.m_screenHeight), Image.ADAPTIVE)
         self.m_albumImage = ImageTk.PhotoImage(self.m_img)
-        self.m_canvas.itemconfig(self.imgContainer, image=self.m_albumImage)
-        self.m_canvas.itemconfig(self.textContainer, text="", fill=self.suggestReadableTextColor())
+        self.m_canvas.itemconfig(self.m_imgContainer, image=self.m_albumImage)
+        self.m_canvas.itemconfig(self.m_textContainer, text="", fill=self.suggestReadableTextColor())
         return
     
     def updateScreen(self, trackStatus, lyric):
@@ -147,10 +151,10 @@ class ScreenHandler:
             case TrackState.UPDATE_IN_PROGRESS:
                 if lyric is None and self.m_NoneReceived == False:
                     lyric = ""
-                    self.m_canvas.itemconfig(self.textContainer, text=lyric)
+                    self.m_canvas.itemconfig(self.m_textContainer, text=lyric)
                     self.m_NoneReceived = True
                 elif lyric is not None:
-                    self.m_canvas.itemconfig(self.textContainer, text=lyric)
+                    self.m_canvas.itemconfig(self.m_textContainer, text=lyric)
                 return
             case TrackState.PAUSED_TRACK:
                 return
