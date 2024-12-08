@@ -1,10 +1,12 @@
 # A class for handling Spotipy and spotify related stuff
 import time
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth
 import requests
-from .Track import Track
+from threading import Lock
 
+from spotipy.oauth2 import SpotifyOAuth
+
+from .Track import Track
 from .config import *
 
 class SpotifyHandler():
@@ -17,7 +19,10 @@ class SpotifyHandler():
         self.spotify = None
         self._currentTrack = Track(None, None, None, None, None, None)
         self.initSpotipy()
+        self.mutex = Lock()
+        self.mutex.acquire()
         self.isPlaying = False
+        self.mutex.release()
 
     # Function for initalization of the class
     # Also reused if we lose the token
@@ -123,10 +128,12 @@ class SpotifyHandler():
             detect if there is a song playing
         """
         while True:
+            self.mutex.acquire()
             if self.spotify.current_user_playing_track() is None:
                 self.isPlaying = False
                 isPlayingEvent.clear()
             else:
                 self.isPlaying = True
                 isPlayingEvent.set()
+            self.mutex.release()
             time.sleep(CONST_CHECK_IS_PLAYING_FREQUENCY)
