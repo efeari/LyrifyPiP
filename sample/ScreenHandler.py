@@ -46,8 +46,8 @@ class ScreenHandler:
         self.m_albumImage = ImageTk.PhotoImage(self.m_img)
         self.imgContainer = self.m_canvas.create_image(0, 0, image=self.m_albumImage, anchor=tk.NW)
 
-        self.textContainer = self.m_canvas.create_text(self.screenWidth/2, self.screenHeight/2, text="",font=("Purisa", self.textSize))
-
+        self.textContainer = self.m_canvas.create_text(self.screenWidth/2, self.screenHeight/2, text="",font=("Purisa", self.textSize), width=self.screenWidth)
+        
         self.m_NoneReceived = False
 
         self.m_root.bind("<B1-Motion>", lambda event:  self.m_root.geometry(f'+{event.x_root}+{event.y_root}'))
