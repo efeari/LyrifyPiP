@@ -11,13 +11,23 @@ LyrifyPiP is a small Python project where the aim is the create a always on top 
 ## Description
 
 ## Getting Started
-
-### Dependencies
+For the time being, users need to create their own app from https://developer.spotify.com/dashboard and use their own Client ID and Client Secret
 
 ### Installing
+- Create a virtual environment of your choice and enable it
+- Create your app from https://developer.spotify.com/dashboard
+- Export your Client ID, Client Secret and Redirect URI in the virtual environment
+- Clone the repository to the desired location and open the folder by
+```
+$ git clone https://github.com/efeari/LyrifyPiP.git
+$ cd LyrifyPiP
+```
+- Install the required packages. A virtual environment is recommended for this step.
+```
+pip install -r requirements.txt
+```
 
 ### Executing program
-
-
 ```
+python main.py
 ```
