@@ -1,12 +1,12 @@
-import os
 import tkinter as tk
-from tkinter import PhotoImage
 from PIL import ImageTk, Image, ImageFilter
+from random import choices
 
 from .config import *
 
 class ScreenHandler:
-    def __init__(self, defaultScreenWidth: int = 480, defaultScreenHeight: int = 480):
+    def __init__(self, defaultScreenWidth: int = 480, defaultScreenHeight: int = 480,
+        backgroundChoice: BackgroundChoice = BackgroundChoice.COLOR):
         """       
         Constructor for the ScreenHandler
         m_root is the main tkinter object.
@@ -19,7 +19,8 @@ class ScreenHandler:
         
         self.m_screenWidth = defaultScreenWidth
         self.m_screenHeight = defaultScreenHeight
-        
+        self.m_backgroundChoice = backgroundChoice
+
         if (self.m_screenWidth == 0 and self.m_screenHeight == 0):
             self.m_root.attributes('-fullscreen', True)
             self.getCurrScreenGeometry()
@@ -33,19 +34,16 @@ class ScreenHandler:
         self.m_textSize = self.m_screenWidth // resolutionToTextRatio
         self.m_root.protocol("WM_DELETE_WINDOW", self.onClosing)
 
-        # Create the image
+        # Create a black backgroung for startup
         self.m_img = Image.new('RGB', (self.m_screenWidth, self.m_screenHeight), "black")
         self.m_img.save(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
-        self.m_img.putalpha(alphaValue)
-        self.m_img = self.m_img.filter(ImageFilter.BLUR)
-        self.m_img = self.m_img.resize((self.m_screenWidth,self.m_screenHeight), Image.ADAPTIVE)
-
-        # Set the background
+        # And set it as background
         self.m_canvas = tk.Canvas(self.m_root, width=self.m_screenWidth, height=self.m_screenHeight)
         self.m_canvas.pack(expand=True, fill=tk.BOTH)
         self.m_albumImage = ImageTk.PhotoImage(self.m_img)
         self.m_imgContainer = self.m_canvas.create_image(0, 0, image=self.m_albumImage, anchor=tk.NW)
 
+        # Create the text container
         self.m_textContainer = self.m_canvas.create_text(self.m_screenWidth/2, self.m_screenHeight/2, text="",font=("Purisa", self.m_textSize), width=self.m_screenWidth)
         
         self.m_NoneReceived = False
@@ -54,11 +52,9 @@ class ScreenHandler:
 
         self.createCloseButton()
 
-    def move(self, event):
-        x = self.m_root.winfo_pointerx()
-        y = self.m_root.winfo_pointery()
-        self.m_root.geometry('+{x}+{y}'.format(x=x,y=y))
-
+    def getBackgroundChoice(self) -> BackgroundChoice:
+        return self.m_backgroundChoice
+    
     def startMainLoop(self):
         self.m_root.mainloop()
 
@@ -147,7 +143,12 @@ class ScreenHandler:
         """
         match trackStatus:
             case TrackState.NEW_TRACK:
-                self.updateAlbumCover()
+                match self.m_backgroundChoice:
+                    case BackgroundChoice.ALBUM_COVER:
+                        self.updateAlbumCover()
+                        return
+                    case BackgroundChoice.COLOR:
+                        self.setRandomBackgrounColor()
             case TrackState.UPDATE_IN_PROGRESS:
                 if lyric is None and self.m_NoneReceived == False:
                     lyric = ""
@@ -192,3 +193,16 @@ class ScreenHandler:
         suggestedColorHex = "#{:02x}{:02x}{:02x}".format(*(d, d, d))
         
         return suggestedColorHex
+
+    def setRandomBackgrounColor(self):
+        """
+        A function to generate a random RGB color and set it as background
+
+        """
+        randColor = tuple(choices(range(256), k=3))
+        self.m_img = Image.new('RGB', (self.m_screenWidth, self.m_screenHeight), randColor)
+        self.m_img.save(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
+        self.m_albumImage = ImageTk.PhotoImage(self.m_img)
+        self.m_canvas.itemconfig(self.m_imgContainer, image=self.m_albumImage)
+        self.m_canvas.itemconfig(self.m_textContainer, text="", fill=self.suggestReadableTextColor())
+

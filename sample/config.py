@@ -1,6 +1,8 @@
 from enum import Enum
+
 TrackState = Enum('TrackState', ['NEW_TRACK', 'UPDATE_IN_PROGRESS', 'PAUSED_TRACK', 'NOT_PLAYING'])
 AuthFlow = Enum('AuthFlow', ['AUTHORIZATION_CODE_FLOW', 'CLIENT_CREDENTIALS_FLOW'])
+BackgroundChoice = Enum('BackgroundChoice', ['ALBUM_COVER', 'COLOR'])
 
 AUTH_FLOW = AuthFlow.AUTHORIZATION_CODE_FLOW
 
