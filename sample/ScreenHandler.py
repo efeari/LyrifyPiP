@@ -1,12 +1,12 @@
-import os
 import tkinter as tk
-from tkinter import PhotoImage
 from PIL import ImageTk, Image, ImageFilter
+from random import choices
 
 from .config import *
 
 class ScreenHandler:
-    def __init__(self, defaultScreenWidth: int = 480, defaultScreenHeight: int = 480):
+    def __init__(self, defaultScreenWidth: int = 480, defaultScreenHeight: int = 480,
+        backgrounChoice: BackgroundChoice = BackgroundChoice.ALBUM_COLOR):
         """       
         Constructor for the ScreenHandler
         m_root is the main tkinter object.
@@ -19,7 +19,8 @@ class ScreenHandler:
         
         self.m_screenWidth = defaultScreenWidth
         self.m_screenHeight = defaultScreenHeight
-        
+        self.m_backgroundChoice = backgrounChoice
+
         if (self.m_screenWidth == 0 and self.m_screenHeight == 0):
             self.m_root.attributes('-fullscreen', True)
             self.getCurrScreenGeometry()
@@ -33,19 +34,16 @@ class ScreenHandler:
         self.m_textSize = self.m_screenWidth // resolutionToTextRatio
         self.m_root.protocol("WM_DELETE_WINDOW", self.onClosing)
 
-        # Create the image
+        # Create a black backgroung for startup
         self.m_img = Image.new('RGB', (self.m_screenWidth, self.m_screenHeight), "black")
         self.m_img.save(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
-        self.m_img.putalpha(alphaValue)
-        self.m_img = self.m_img.filter(ImageFilter.BLUR)
-        self.m_img = self.m_img.resize((self.m_screenWidth,self.m_screenHeight), Image.ADAPTIVE)
-
-        # Set the background
+        # And set it as background
         self.m_canvas = tk.Canvas(self.m_root, width=self.m_screenWidth, height=self.m_screenHeight)
         self.m_canvas.pack(expand=True, fill=tk.BOTH)
         self.m_albumImage = ImageTk.PhotoImage(self.m_img)
         self.m_imgContainer = self.m_canvas.create_image(0, 0, image=self.m_albumImage, anchor=tk.NW)
 
+        # Create the text container
         self.m_textContainer = self.m_canvas.create_text(self.m_screenWidth/2, self.m_screenHeight/2, text="",font=("Purisa", self.m_textSize), width=self.m_screenWidth)
         
         self.m_NoneReceived = False
@@ -53,11 +51,6 @@ class ScreenHandler:
         self.m_root.bind("<B1-Motion>", lambda event:  self.m_root.geometry(f'+{event.x_root}+{event.y_root}'))
 
         self.createCloseButton()
-
-    def move(self, event):
-        x = self.m_root.winfo_pointerx()
-        y = self.m_root.winfo_pointery()
-        self.m_root.geometry('+{x}+{y}'.format(x=x,y=y))
 
     def startMainLoop(self):
         self.m_root.mainloop()
