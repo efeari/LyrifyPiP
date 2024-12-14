@@ -81,7 +81,7 @@ class SpotifyHandler():
         """
         self._currentTrack = newTrack
 
-    def checkTrackStatus(self):
+    def checkTrackStatus(self, setCover: BackgroundChoice):
         """
         A function to handle the track status via Spotify API
         If the user is not playing a song, sets the returns TrackState.notPlaying
@@ -104,9 +104,10 @@ class SpotifyHandler():
             artists = " ".join([artist["name"] for artist in artists])
             id = currentTrackTemp['item']['id']
             trackImg = currentTrackTemp["item"]["album"]["images"][0]["url"]
-            img_data = requests.get(trackImg).content
-            with open('TrackInfo\Background.png', 'wb') as handler:
-                handler.write(img_data)           
+            if setCover == BackgroundChoice.ALBUM_COVER:
+                img_data = requests.get(trackImg).content
+                with open('TrackInfo\Background.png', 'wb') as handler:
+                    handler.write(img_data)           
             progressMs = currentTrackTemp["progress_ms"]
             self.setCurrentTrack(Track(trackId, artists, trackImg, id, None, progressMs))
             return TrackState.NEW_TRACK

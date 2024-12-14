@@ -16,7 +16,7 @@ def main():
     if len(sys.argv) > 1:
         try:
             print(f"Arguments passed: {sys.argv[1:]}")
-            screenHandler = ScreenHandler.ScreenHandler(int(sys.argv[1]), int(sys.argv[2]));
+            screenHandler = ScreenHandler.ScreenHandler(int(sys.argv[1]), int(sys.argv[2]), config.BackgroundChoice(sys.arg[3]));
         except ValueError:
             print("Invalid screen dimensions provided")
             return -1
@@ -27,7 +27,7 @@ def main():
     def checkSongAndAdjustLyric(isPlayingEvent: threading.Event):
         isPlayingEvent.wait()
         while True:
-            trackStatus = sh.checkTrackStatus()
+            trackStatus = sh.checkTrackStatus(screenHandler.getBackgroundChoice())
             lyric = lh.setCurrentTrack(sh.getCurrentTrack(),)
             screenHandler.updateScreen(trackStatus, lyric)
             if sh.isPlaying:

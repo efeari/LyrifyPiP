@@ -6,7 +6,7 @@ from .config import *
 
 class ScreenHandler:
     def __init__(self, defaultScreenWidth: int = 480, defaultScreenHeight: int = 480,
-        backgrounChoice: BackgroundChoice = BackgroundChoice.ALBUM_COLOR):
+        backgroundChoice: BackgroundChoice = BackgroundChoice.COLOR):
         """       
         Constructor for the ScreenHandler
         m_root is the main tkinter object.
@@ -19,7 +19,7 @@ class ScreenHandler:
         
         self.m_screenWidth = defaultScreenWidth
         self.m_screenHeight = defaultScreenHeight
-        self.m_backgroundChoice = backgrounChoice
+        self.m_backgroundChoice = backgroundChoice
 
         if (self.m_screenWidth == 0 and self.m_screenHeight == 0):
             self.m_root.attributes('-fullscreen', True)
@@ -52,6 +52,9 @@ class ScreenHandler:
 
         self.createCloseButton()
 
+    def getBackgroundChoice(self) -> BackgroundChoice:
+        return self.m_backgroundChoice
+    
     def startMainLoop(self):
         self.m_root.mainloop()
 
@@ -140,7 +143,12 @@ class ScreenHandler:
         """
         match trackStatus:
             case TrackState.NEW_TRACK:
-                self.updateAlbumCover()
+                match self.m_backgroundChoice:
+                    case BackgroundChoice.ALBUM_COVER:
+                        self.updateAlbumCover()
+                        return
+                    case BackgroundChoice.COLOR:
+                        self.setRandomBackgrounColor()
             case TrackState.UPDATE_IN_PROGRESS:
                 if lyric is None and self.m_NoneReceived == False:
                     lyric = ""
@@ -185,3 +193,16 @@ class ScreenHandler:
         suggestedColorHex = "#{:02x}{:02x}{:02x}".format(*(d, d, d))
         
         return suggestedColorHex
+
+    def setRandomBackgrounColor(self):
+        """
+        A function to generate a random RGB color and set it as background
+
+        """
+        randColor = tuple(choices(range(256), k=3))
+        self.m_img = Image.new('RGB', (self.m_screenWidth, self.m_screenHeight), randColor)
+        self.m_img.save(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
+        self.m_albumImage = ImageTk.PhotoImage(self.m_img)
+        self.m_canvas.itemconfig(self.m_imgContainer, image=self.m_albumImage)
+        self.m_canvas.itemconfig(self.m_textContainer, text="", fill=self.suggestReadableTextColor())
+
