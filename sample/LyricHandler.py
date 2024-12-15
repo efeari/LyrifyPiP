@@ -77,23 +77,26 @@ class LyricHandler:
         if self.lastTimeIndex == 0 or self.lastTimeIndex <= self.firstTimeStamp:
             return None
         else:
-            key = self.closestTimeStamp(self.lastTimeIndex)
-            keys = list(self.parsedLyrics.keys())
-            keyIndex = keys.index(key)
-            if self.parsedLyrics[key][1] is False:
-                self.parsedLyrics[key][1] = True
-                if keyIndex == 0:
-                    return self.parsedLyrics[key][0] + "\n" + "\n" + self.parsedLyrics[keys[keyIndex + 1]][0]
-                elif keyIndex == len(keys) - 1:
-                    return self.parsedLyrics[keys[keyIndex - 1]][0] + "\n"+ "\n" + self.parsedLyrics[key][0]
-                else:
-                    return self.parsedLyrics[keys[keyIndex - 1]][0] + "\n"+ "\n" + \
-                        self.parsedLyrics[key][0] + "\n" + "\n" + \
-                        self.parsedLyrics[keys[keyIndex + 1]][0]
+            try:
+                key = self.closestTimeStamp(self.lastTimeIndex)
+                keys = list(self.parsedLyrics.keys())
+                keyIndex = keys.index(key)
+                if self.parsedLyrics[key][1] is False:
+                    self.parsedLyrics[key][1] = True
+                    if keyIndex == 0:
+                        return self.parsedLyrics[key][0] + "\n" + "\n" + self.parsedLyrics[keys[keyIndex + 1]][0]
+                    elif keyIndex == len(keys) - 1:
+                        return self.parsedLyrics[keys[keyIndex - 1]][0] + "\n"+ "\n" + self.parsedLyrics[key][0]
+                    else:
+                        return self.parsedLyrics[keys[keyIndex - 1]][0] + "\n"+ "\n" + \
+                            self.parsedLyrics[key][0] + "\n" + "\n" + \
+                            self.parsedLyrics[keys[keyIndex + 1]][0]
+            except:
+                return ""
 
     # A small helper function to match the exact lyric
     def closestTimeStamp(self, currentStamp):
         array = asarray(list(self.parsedLyrics.keys()))
-        idx = array[array <= currentStamp].argmax()  
+        idx = array[array <= currentStamp].argmax()
         return array[idx]
         
