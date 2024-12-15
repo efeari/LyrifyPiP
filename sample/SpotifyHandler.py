@@ -9,7 +9,9 @@ from spotipy.oauth2 import SpotifyOAuth
 from .Track import Track
 from .config import *
 
-class SpotifyHandler():
+from .MediaHandler import MediaHandler
+
+class SpotifyHandler(MediaHandler):
     def __init__(self):
         """
         Constructor for SpotifyHandler, which is the main class handling the

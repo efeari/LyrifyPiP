@@ -1,0 +1,45 @@
+import asyncio
+from platform import system
+if system() == 'Windows':
+    from winrt.windows.media.control import \
+        GlobalSystemMediaTransportControlsSessionManager as MediaManager
+    
+elif system() == 'Linux':
+    pass
+
+class MediaHandler:
+    def __init__(self):
+        pass
+
+    async def get_media_info(self):
+        mediaManager = await MediaManager.request_async()
+        # Get current media sessions
+        sessions = mediaManager.get_sessions()
+
+        # Find which ones are playing
+        currentlyPlayingSessions = []
+        for i in range(len(sessions)):
+            # https://learn.microsoft.com/en-us/uwp/api/windows.media.control.globalsystemmediatransportcontrolssessionplaybackstatus?view=winrt-26100
+            if sessions[i].get_playback_info().playback_status == 4:
+                if 'spotify' in sessions[i].source_app_user_model_id.lower():
+                    # Give priority to Spotify
+                    currentlyPlayingSessions.append([sessions[i], 0])
+                else:
+                    currentlyPlayingSessions.append([sessions[i], 1])
+
+        # Return if no currently playing session
+        if len(currentlyPlayingSessions) == 0:
+             return
+        
+        # Order them based on the priority
+        currentlyPlayingSessions.sort(key = lambda x: x[1])
+        highestPrioritySession = currentlyPlayingSessions[0][0]
+
+        info = await highestPrioritySession.try_get_media_properties_async()
+
+        # song_attr[0] != '_' ignores system attributes
+        info = {song_attr: info.__getattribute__(song_attr) for song_attr in dir(info) if song_attr[0] != '_'}
+
+        # converts winrt vector to list
+        info['genres'] = list(info['genres'])
+        print(info)
