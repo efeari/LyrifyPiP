@@ -1,12 +1,11 @@
 
 # LyrifyPiP
 
-LyrifyPiP is a small Python project where the aim is the create a always on top screen, where the lyrics from the currently playing song on Spotify is displayed
+LyrifyPiP is a small Python project whose aim is to create an always on top screen, where the lyrics from the currently playing song on Spotify are displayed
 
 ![image](https://github.com/user-attachments/assets/0421b284-25d0-47cf-ba07-07c94c464812)
 
-![image](https://github.com/user-attachments/assets/7030f42e-682d-42fc-a730-f4804c272a9f)
-
+![image](https://github.com/user-attachments/assets/ee54a3bf-fe0f-48ff-ba3e-54d0198a960e)
 
 ## Description
 
