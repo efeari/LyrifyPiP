@@ -197,4 +197,9 @@ TrackInfo
 .syncedlyrics/
 
 .cache-efearykan
-.umay
+.lyrifypip
+
+.venv
+pip-selfcheck.json
+
+.python-version
