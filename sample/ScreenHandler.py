@@ -141,26 +141,25 @@ class ScreenHandler:
             trackStatus (_type_): _description_
             lyric (_type_): _description_
         """
-        match trackStatus:
-            case TrackState.NEW_TRACK:
-                match self.m_backgroundChoice:
-                    case BackgroundChoice.ALBUM_COVER:
-                        self.updateAlbumCover()
-                        return
-                    case BackgroundChoice.COLOR:
-                        self.setRandomBackgrounColor()
-            case TrackState.UPDATE_IN_PROGRESS:
-                if lyric is None and self.m_NoneReceived == False:
-                    lyric = ""
-                    self.m_canvas.itemconfig(self.m_textContainer, text=lyric)
-                    self.m_NoneReceived = True
-                elif lyric is not None:
-                    self.m_canvas.itemconfig(self.m_textContainer, text=lyric)
+        if trackStatus == TrackState.NEW_TRACK:
+            if self.m_backgroundChoice == BackgroundChoice.ALBUM_COVER:
+                self.updateAlbumCover()
                 return
-            case TrackState.PAUSED_TRACK:
-                return
-            case TrackState.NOT_PLAYING:
-                return
+            elif self.m_backgroundChoice == BackgroundChoice.COLOR:
+                self.setRandomBackgrounColor()
+        elif trackStatus == TrackState.UPDATE_IN_PROGRESS:
+            if lyric is None and self.m_NoneReceived == False:
+                lyric = ""
+                self.m_canvas.itemconfig(self.m_textContainer, text=lyric)
+                self.m_NoneReceived = True
+            elif lyric is not None:
+                self.m_canvas.itemconfig(self.m_textContainer, text=lyric)
+            return
+        elif trackStatus == TrackState.PAUSED_TRACK:
+            return
+        elif trackStatus == TrackState.NOT_PLAYING:
+            return
+
 
     def getDominantColor(self):
         """
