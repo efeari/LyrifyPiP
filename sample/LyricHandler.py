@@ -34,7 +34,9 @@ class LyricHandler:
         # Means that user is still playing the last parsed song
         # but we still need to find the correct lyric in the dict!
         else:
+            print('LyricHandler', self._currentTrack.progressMs)
             if self.m_trackFound:
+                self._currentTrack = newTrack
                 self.lastTimeIndex = self._currentTrack.progressMs
                 return self.matchCurrentLine()
             else:

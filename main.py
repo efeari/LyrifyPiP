@@ -1,16 +1,18 @@
 import time
 import threading
 import sys
-
+import asyncio
 import sample.SpotifyHandler as SpotifyHandler
 import sample.LyricHandler as LyricHandler
 import sample.ScreenHandler as ScreenHandler
 import sample.config as config
+import sample.OsMediaHandler as OsMediaHandler
 
 
 def main():
     # Init wifi access point
-    sh = SpotifyHandler.SpotifyHandler();
+    #sh = SpotifyHandler.SpotifyHandler();
+    mh = OsMediaHandler.OsMediaHandler()
     lh = LyricHandler.LyricHandler();
 
     if len(sys.argv) > 1:
@@ -27,10 +29,11 @@ def main():
     def checkSongAndAdjustLyric(isPlayingEvent: threading.Event):
         isPlayingEvent.wait()
         while True:
-            trackStatus = sh.checkTrackStatus(screenHandler.getBackgroundChoice())
-            lyric = lh.setCurrentTrack(sh.getCurrentTrack(),)
+            trackStatus = mh.checkTrackStatus(screenHandler.getBackgroundChoice())
+            lyric = lh.setCurrentTrack(mh.getCurrentTrack())
+            print(lyric)
             screenHandler.updateScreen(trackStatus, lyric)
-            if sh.isPlaying:
+            if mh.isPlaying:
                 time.sleep(config.CONST_DEFAULT_UPDATE_TRACK_FREQUENCY)
             else:
                 isPlayingEvent.wait()
@@ -43,11 +46,11 @@ def main():
     updateThread.daemon = True
     updateThread.start()
 
-    refreshTokenThread = threading.Thread(target=sh.refreshSpotify, args=(isPlayingEvent,))
-    refreshTokenThread.daemon = True
-    refreshTokenThread.start()
+    # refreshTokenThread = threading.Thread(target=sh.refreshSpotify, args=(isPlayingEvent,))
+    # refreshTokenThread.daemon = True
+    # refreshTokenThread.start()
 
-    checkIfPlayingThread = threading.Thread(target=sh.updateIsPlaying, args=(isPlayingEvent,))
+    checkIfPlayingThread = threading.Thread(target=mh.updateIsPlaying, args=(isPlayingEvent,))
     checkIfPlayingThread.daemon = True
     checkIfPlayingThread.start()
 
