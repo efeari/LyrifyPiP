@@ -1,7 +1,6 @@
 import time
 import threading
 import sys
-import asyncio
 import sample.SpotifyHandler as SpotifyHandler
 import sample.LyricHandler as LyricHandler
 import sample.ScreenHandler as ScreenHandler
@@ -13,12 +12,12 @@ def main():
     # Init wifi access point
     #sh = SpotifyHandler.SpotifyHandler();
     mh = OsMediaHandler.OsMediaHandler()
-    lh = LyricHandler.LyricHandler();
+    lh = LyricHandler.LyricHandler()
 
     if len(sys.argv) > 1:
         try:
             print(f"Arguments passed: {sys.argv[1:]}")
-            screenHandler = ScreenHandler.ScreenHandler(int(sys.argv[1]), int(sys.argv[2]), config.BackgroundChoice(sys.arg[3]));
+            screenHandler = ScreenHandler.ScreenHandler(int(sys.argv[1]), int(sys.argv[2]), config.BackgroundChoice(sys.argv[3]));
         except ValueError:
             print("Invalid screen dimensions provided")
             return -1
@@ -26,8 +25,7 @@ def main():
     else:
         screenHandler = ScreenHandler.ScreenHandler();
 
-    def checkSongAndAdjustLyric(isPlayingEvent: threading.Event):
-        isPlayingEvent.wait()
+    def checkSongAndAdjustLyric():
         while True:
             trackStatus = mh.checkTrackStatus(screenHandler.getBackgroundChoice())
             lyric = lh.setCurrentTrack(mh.getCurrentTrack())
@@ -36,13 +34,9 @@ def main():
             if mh.isPlaying:
                 time.sleep(config.CONST_DEFAULT_UPDATE_TRACK_FREQUENCY)
             else:
-                isPlayingEvent.wait()
+                break
 
-
-    isPlayingEvent = threading.Event()
-    isPlayingEvent.clear()
-
-    updateThread = threading.Thread(target=checkSongAndAdjustLyric, args=(isPlayingEvent,))
+    updateThread = threading.Thread(target=checkSongAndAdjustLyric, args=())
     updateThread.daemon = True
     updateThread.start()
 
@@ -50,9 +44,9 @@ def main():
     # refreshTokenThread.daemon = True
     # refreshTokenThread.start()
 
-    checkIfPlayingThread = threading.Thread(target=mh.updateIsPlaying, args=(isPlayingEvent,))
-    checkIfPlayingThread.daemon = True
-    checkIfPlayingThread.start()
+    # checkIfPlayingThread = threading.Thread(target=mh.updateIsPlaying, args=(isPlayingEvent,))
+    # checkIfPlayingThread.daemon = True
+    # checkIfPlayingThread.start()
 
     screenHandler.startMainLoop()
 

@@ -34,6 +34,9 @@ class OsMediaHandler(MediaHandler):
             for i in range(len(sessions)):
                 # https://learn.microsoft.com/en-us/uwp/api/windows.media.control.globalsystemmediatransportcontrolssessionplaybackstatus?view=winrt-26100
                 if sessions[i].get_playback_info().playback_status == 4:
+                    self.mutex.acquire()
+                    self.isPlaying = True
+                    self.mutex.release()
                     if 'spotify' in sessions[i].source_app_user_model_id.lower():
                         # Give priority to Spotify
                         currentlyPlayingSessions.append([sessions[i], 0])
@@ -42,6 +45,9 @@ class OsMediaHandler(MediaHandler):
 
             # Return if no currently playing session
             if len(currentlyPlayingSessions) == 0:
+                self.mutex.acquire()
+                self.isPlaying = False
+                self.mutex.release()
                 return
             
             # Order them based on the priority
@@ -120,25 +126,25 @@ class OsMediaHandler(MediaHandler):
         #     return TrackState.PAUSED_TRACK
 
 
-    def updateIsPlaying(self, isPlayingEvent):
-        """
-        A function called in a separate thread from main,
-        which continously checks the status of self.isPlaying
-        and sets the same value to isPlayingEvent to make the
-        communication between different threads
+    # def updateIsPlaying(self, isPlayingEvent):
+    #     """
+    #     A function called in a separate thread from main,
+    #     which continously checks the status of self.isPlaying
+    #     and sets the same value to isPlayingEvent to make the
+    #     communication between different threads
 
-        Args:
-            isPlayingEvent (bool): A threading synchronization primitive used to
-            detect if there is a song playing
-        """
-        while True:
-            self.mutex.acquire()
-            self.fetchNewTrack()
-            if self._currentTrack is None:
-                self.isPlaying = False
-                isPlayingEvent.clear()
-            else:
-                self.isPlaying = True
-                isPlayingEvent.set()
-            self.mutex.release()
-            time.sleep(CONST_CHECK_IS_PLAYING_FREQUENCY)
+    #     Args:
+    #         isPlayingEvent (bool): A threading synchronization primitive used to
+    #         detect if there is a song playing
+    #     """
+    #     while True:
+    #         self.mutex.acquire()
+    #         self.fetchNewTrack()
+    #         if self._currentTrack is None:
+    #             self.isPlaying = False
+    #             isPlayingEvent.clear()
+    #         else:
+    #             self.isPlaying = True
+    #             isPlayingEvent.set()
+    #         self.mutex.release()
+    #         time.sleep(CONST_CHECK_IS_PLAYING_FREQUENCY)
