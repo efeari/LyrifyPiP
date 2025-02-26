@@ -23,8 +23,7 @@ class MediaHandler:
         Args:
             newTrack (Track): _currentTrack to be
         """
-        if (self._currentTrack != newTrack):
-            self._currentTrack = newTrack
+        self._currentTrack = newTrack
 
     def getPreviousTrack(self):
         """

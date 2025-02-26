@@ -6,12 +6,11 @@ import sample.config as config
 import sample.OsMediaHandler as OsMediaHandler
 import asyncio
 
-
 async def main():
     # Init wifi access point
     #sh = SpotifyHandler.SpotifyHandler();
     lh = LyricHandler.LyricHandler()
-
+    
     if len(sys.argv) > 1:
         try:
             print(f"Arguments passed: {sys.argv[1:]}")
@@ -24,7 +23,7 @@ async def main():
         screenHandler = ScreenHandler.ScreenHandler();
 
     async def on_track_change(track):
-        lyrics = await lh.setCurrentTrack(track)
+        lyrics = lh.setCurrentTrack(track)
         currentState = config.TrackState.NOT_PLAYING
         if track == None:
             currentState = config.TrackState.NOT_PLAYING
@@ -35,7 +34,9 @@ async def main():
         elif track and track == mh.getPreviousTrack():
             currentState = config.TrackState.UPDATE_IN_PROGRESS
 
+        print(lyrics)
         screenHandler.updateScreen(currentState, lyrics)
+        screenHandler.update()
 
     mh =  OsMediaHandler.OsMediaHandler(on_track_change_callback=on_track_change)
 
@@ -46,7 +47,7 @@ async def main():
         print("Monitoring stopped by user.")
 
     # Start the main loop
-    screenHandler.startMainLoop()
+    #screenHandler.startMainLoop()
 
     return 0
 

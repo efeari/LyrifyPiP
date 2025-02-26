@@ -25,7 +25,7 @@ class OsMediaHandler(MediaHandler):
         self._on_track_change_callback = on_track_change_callback  # Callback for main
 
     async def start_monitoring(self):
-        print("Starting media monitoring...")
+        #print("Starting media monitoring...")
         await self._setup_session_manager()
         await asyncio.Event().wait()
 
@@ -56,7 +56,7 @@ class OsMediaHandler(MediaHandler):
             self._timeline_changed_token = self.m_currentSession.add_timeline_properties_changed(
                 lambda s, e: self._event_loop.call_soon_threadsafe(self._on_timeline_changed)
             )
-            print("Subscribed to timeline changes.")
+            #print("Subscribed to timeline changes.")
 
     async def _fetch_initial_media_info(self):
         await self.getMediaInfo()
@@ -93,7 +93,7 @@ class OsMediaHandler(MediaHandler):
         with BytesIO(bytearray(byte_buffer)) as binary:
             self._trackImg = Image.open(binary)
             self._trackImg.save(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
-        print("Thumbnail fetched and saved.")
+        #print("Thumbnail fetched and saved.")
 
     def _update_current_track(self):
         if not self.m_mediaInfo or not self.m_currentSession:
@@ -115,7 +115,7 @@ class OsMediaHandler(MediaHandler):
             )
 
     def _on_timeline_changed(self):
-        print("Timeline properties changed detected.")
+        #print("Timeline properties changed detected.")
         asyncio.run_coroutine_threadsafe(self._handle_timeline_change(), self._event_loop)
 
     async def _handle_timeline_change(self):
@@ -128,4 +128,4 @@ class OsMediaHandler(MediaHandler):
         if self.m_currentSession and self._timeline_changed_token:
             self.m_currentSession.remove_timeline_properties_changed(self._timeline_changed_token)
             self._timeline_changed_token = None
-            print("Unsubscribed from timeline changes.")
+            #print("Unsubscribed from timeline changes.")

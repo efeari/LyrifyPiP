@@ -16,7 +16,6 @@ class ScreenHandler:
             defaultScreenHeight (int, optional): Screen heigth given by the user. Defaults to 0.
         """
         self.m_root = tk.Tk()
-        
         self.m_screenWidth = defaultScreenWidth
         self.m_screenHeight = defaultScreenHeight
         self.m_backgroundChoice = backgroundChoice
@@ -57,6 +56,10 @@ class ScreenHandler:
     
     def startMainLoop(self):
         self.m_root.mainloop()
+
+    def update(self):
+        self.m_root.update_idletasks()
+        self.m_root.update()
 
     def createCloseButton(self):
         """
