@@ -121,8 +121,10 @@ class OsMediaHandler(MediaHandler):
     async def _handle_timeline_change(self):
         await self.getMediaInfo()
         if self.m_mediaInfo:
-            await self.fetchMediaThumbnail()
             self._update_current_track()
+            if (self._previousTrack != self._currentTrack): 
+                await self.fetchMediaThumbnail()
+
 
     def stop_monitoring(self):
         if self.m_currentSession and self._timeline_changed_token:
