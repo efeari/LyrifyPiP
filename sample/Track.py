@@ -20,4 +20,4 @@ class Track:
         self.id = id
 
     def __eq__(self, rhs):
-        return (self.name == rhs.name and self.artists == rhs.artists)
+        return (rhs is not None and self.name == rhs.name and self.artists == rhs.artists)

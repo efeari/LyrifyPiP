@@ -1,17 +1,15 @@
-import time
-import threading
 import sys
 import sample.SpotifyHandler as SpotifyHandler
 import sample.LyricHandler as LyricHandler
 import sample.ScreenHandler as ScreenHandler
 import sample.config as config
 import sample.OsMediaHandler as OsMediaHandler
+import asyncio
 
 
-def main():
+async def main():
     # Init wifi access point
     #sh = SpotifyHandler.SpotifyHandler();
-    mh = OsMediaHandler.OsMediaHandler()
     lh = LyricHandler.LyricHandler()
 
     if len(sys.argv) > 1:
@@ -25,32 +23,32 @@ def main():
     else:
         screenHandler = ScreenHandler.ScreenHandler();
 
-    def checkSongAndAdjustLyric():
-        while True:
-            trackStatus = mh.checkTrackStatus(screenHandler.getBackgroundChoice())
-            lyric = lh.setCurrentTrack(mh.getCurrentTrack())
-            print(lyric)
-            screenHandler.updateScreen(trackStatus, lyric)
-            if mh.isPlaying:
-                time.sleep(config.CONST_DEFAULT_UPDATE_TRACK_FREQUENCY)
-            else:
-                break
+    async def on_track_change(track):
+        lyrics = await lh.setCurrentTrack(track)
+        currentState = config.TrackState.NOT_PLAYING
+        if track == None:
+            currentState = config.TrackState.NOT_PLAYING
+        elif track and mh.isPlaying == False:
+            currentState = config.TrackState.PAUSED_TRACK
+        elif track and track != mh.getPreviousTrack():
+            currentState = config.TrackState.NEW_TRACK
+        elif track and track == mh.getPreviousTrack():
+            currentState = config.TrackState.UPDATE_IN_PROGRESS
 
-    updateThread = threading.Thread(target=checkSongAndAdjustLyric, args=())
-    updateThread.daemon = True
-    updateThread.start()
+        screenHandler.updateScreen(currentState, lyrics)
 
-    # refreshTokenThread = threading.Thread(target=sh.refreshSpotify, args=(isPlayingEvent,))
-    # refreshTokenThread.daemon = True
-    # refreshTokenThread.start()
+    mh =  OsMediaHandler.OsMediaHandler(on_track_change_callback=on_track_change)
 
-    # checkIfPlayingThread = threading.Thread(target=mh.updateIsPlaying, args=(isPlayingEvent,))
-    # checkIfPlayingThread.daemon = True
-    # checkIfPlayingThread.start()
+    try:
+        await mh.start_monitoring()
+    except KeyboardInterrupt:
+        mh.stop_monitoring()
+        print("Monitoring stopped by user.")
 
+    # Start the main loop
     screenHandler.startMainLoop()
 
     return 0
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

@@ -11,7 +11,7 @@ class LyricHandler:
         self._currentTrack = Track(None, None, None, None, None, None)
         self.m_trackFound = False
 
-    def setCurrentTrack(self, newTrack):
+    async def setCurrentTrack(self, newTrack):
         # If the user changed the song, we need to reparse all the lyrics
         if self._currentTrack != newTrack:
             self._currentTrack = newTrack
@@ -34,7 +34,6 @@ class LyricHandler:
         # Means that user is still playing the last parsed song
         # but we still need to find the correct lyric in the dict!
         else:
-            print('LyricHandler', self._currentTrack.progressMs)
             if self.m_trackFound:
                 self._currentTrack = newTrack
                 self.lastTimeIndex = self._currentTrack.progressMs
