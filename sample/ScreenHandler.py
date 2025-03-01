@@ -150,6 +150,8 @@ class ScreenHandler:
                 return
             elif self.m_backgroundChoice == BackgroundChoice.COLOR:
                 self.setRandomBackgrounColor()
+                if lyric is not None:
+                    self.m_canvas.itemconfig(self.m_textContainer, text=lyric)
         elif trackStatus == TrackState.UPDATE_IN_PROGRESS:
             if lyric is None and self.m_NoneReceived == False:
                 lyric = ""
