@@ -84,14 +84,7 @@ class LyricHandler:
                 keyIndex = keys.index(key)
                 if self.parsedLyrics[key][1] is False:
                     self.parsedLyrics[key][1] = True
-                    if keyIndex == 0:
-                        return self.parsedLyrics[key][0] + "\n" + "\n" + self.parsedLyrics[keys[keyIndex + 1]][0]
-                    elif keyIndex == len(keys) - 1:
-                        return self.parsedLyrics[keys[keyIndex - 1]][0] + "\n"+ "\n" + self.parsedLyrics[key][0]
-                    else:
-                        return self.parsedLyrics[keys[keyIndex - 1]][0] + "\n"+ "\n" + \
-                            self.parsedLyrics[key][0] + "\n" + "\n" + \
-                            self.parsedLyrics[keys[keyIndex + 1]][0]
+                    return self.get_lyrics_range(keyIndex, 3)
             except:
                 return ""
 
@@ -100,4 +93,10 @@ class LyricHandler:
         array = asarray(list(self.parsedLyrics.keys()))
         idx = array[array <= currentStamp].argmax()
         return array[idx]
+    
+    def get_lyrics_range(self, keyIndex, i=1):
+        keys = list(self.parsedLyrics.keys())  # Assuming parsedLyrics is a dict
+        start = max(0, keyIndex - i)  # Don’t go below 0
+        end = min(len(keys) - 1, keyIndex + i)  # Don’t exceed dict length
+        return "\n\n".join(self.parsedLyrics[keys[k]][0] for k in range(start, end + 1))
         
