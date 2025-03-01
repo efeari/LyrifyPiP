@@ -26,6 +26,7 @@ class LyricHandler:
             if self.lryics is not None:
                 self.getParsedLyrics()
                 self.m_trackFound = True
+                self.lastTimeIndex = self._currentTrack.progressMs
                 return self.matchCurrentLine()
             else:
                 self.m_trackFound = False
