@@ -34,7 +34,6 @@ async def main():
         elif track and track == mh.getPreviousTrack():
             currentState = config.TrackState.UPDATE_IN_PROGRESS
 
-        print(lyrics)
         screenHandler.updateScreen(currentState, lyrics)
         screenHandler.update()
 
@@ -44,7 +43,6 @@ async def main():
         await mh.start_monitoring()
     except KeyboardInterrupt:
         mh.stop_monitoring()
-        print("Monitoring stopped by user.")
 
     # Start the main loop
     #screenHandler.startMainLoop()

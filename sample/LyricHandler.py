@@ -20,7 +20,6 @@ class LyricHandler:
             try:
                 self.lryics = syncedlyrics.search(searchTerm)
             except Exception as e:
-                print(e)
                 self.lryics = None
             self.firstTimeStamp = 0
             # If we have matched lyrics!
@@ -37,7 +36,6 @@ class LyricHandler:
             if self.m_trackFound:
                 self._currentTrack = newTrack
                 self.lastTimeIndex = self._currentTrack.progressMs
-                print("From lyrinc handler: ", self.lastTimeIndex)
                 return self.matchCurrentLine()
             else:
                 return None
