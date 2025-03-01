@@ -1,28 +1,25 @@
 # A class for handling Spotipy and spotify related stuff
 import time
 import spotipy
-import requests
-from threading import Lock
 
 from spotipy.oauth2 import SpotifyOAuth
 
 from .Track import Track
 from .config import *
 
-class SpotifyHandler():
+from .MediaHandler import MediaHandler as MediaHandler
+import requests
+
+class SpotifyHandler(MediaHandler):
     def __init__(self):
         """
         Constructor for SpotifyHandler, which is the main class handling the
         API connection via Spotipy
         """
+        super().__init__()
         self.scope = "user-read-currently-playing, user-read-playback-state"
         self.spotify = None
-        self._currentTrack = Track(None, None, None, None, None, None)
         self.initSpotipy()
-        self.mutex = Lock()
-        self.mutex.acquire()
-        self.isPlaying = False
-        self.mutex.release()
 
     # Function for initalization of the class
     # Also reused if we lose the token
@@ -62,24 +59,7 @@ class SpotifyHandler():
                     time.sleep(CONST_DEFAFULT_TOKEN_REFRESH_FREQUENCY)
                 else:
                     isPlayingEvent.wait()
-    
-    def getCurrentTrack(self):
-        """
-        Getter for the _currentTrack
 
-        Returns:
-            self_currentTrack: Current playing track
-        """
-        return self._currentTrack
-    
-    def setCurrentTrack(self, newTrack: Track):
-        """
-        Setter for the _current track
-
-        Args:
-            newTrack (Track): _currentTrack to be
-        """
-        self._currentTrack = newTrack
 
     def checkTrackStatus(self, setCover: BackgroundChoice):
         """
@@ -117,24 +97,5 @@ class SpotifyHandler():
         elif currentTrackTemp['is_playing'] == False:
             return TrackState.PAUSED_TRACK
         
-    def updateIsPlaying(self, isPlayingEvent):
-        """
-        A function called in a separate thread from main,
-        which continously checks the status of self.isPlaying
-        and sets the same value to isPlayingEvent to make the
-        communication between different threads
-
-        Args:
-            isPlayingEvent (bool): A threading synchronization primitive used to
-            detect if there is a song playing
-        """
-        while True:
-            self.mutex.acquire()
-            if self.spotify.current_user_playing_track() is None:
-                self.isPlaying = False
-                isPlayingEvent.clear()
-            else:
-                self.isPlaying = True
-                isPlayingEvent.set()
-            self.mutex.release()
-            time.sleep(CONST_CHECK_IS_PLAYING_FREQUENCY)
+    def fetchNewTrack(self):
+        return self.spotify.current_user_playing_track()

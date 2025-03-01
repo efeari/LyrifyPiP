@@ -35,7 +35,9 @@ class LyricHandler:
         # but we still need to find the correct lyric in the dict!
         else:
             if self.m_trackFound:
+                self._currentTrack = newTrack
                 self.lastTimeIndex = self._currentTrack.progressMs
+                print("From lyrinc handler: ", self.lastTimeIndex)
                 return self.matchCurrentLine()
             else:
                 return None
