@@ -25,15 +25,15 @@ class OsMediaHandler(MediaHandler):
         self._on_track_change_callback = on_track_change_callback  # Callback for main
 
     async def start_monitoring(self):
-        await self._setup_session_manager()
+        asyncio.create_task(self._setup_session_manager())
         await asyncio.Event().wait()
 
     async def _setup_session_manager(self):
         media_manager = await MediaManager.request_async()
         self.m_currentSession = await self._get_current_session(media_manager)
         if self.m_currentSession:
-            await self._subscribe_to_changes()
-            await self._fetch_initial_media_info()
+            asyncio.create_task(self._subscribe_to_changes())
+            asyncio.create_task(self._fetch_initial_media_info())
 
     async def _get_current_session(self, media_manager):
         sessions = media_manager.get_sessions()
@@ -59,7 +59,7 @@ class OsMediaHandler(MediaHandler):
     async def _fetch_initial_media_info(self):
         await self.getMediaInfo()
         if self.m_mediaInfo:
-            await self.fetchMediaThumbnail()
+            asyncio.create_task(self.fetchMediaThumbnail())
             self._update_current_track()
 
     async def getMediaInfo(self):
@@ -99,7 +99,6 @@ class OsMediaHandler(MediaHandler):
         artists = self.m_mediaInfo.get("artist", "Unknown")
         progress_ms = self.m_currentSession.get_timeline_properties().position.duration / 10000
         new_track = Track(track_id, artists, self._trackImg, None, None, progress_ms)
-        self.setPreviousTrack(self.getCurrentTrack())
         self.setCurrentTrack(new_track)
         
         # Notify main via callback
@@ -117,7 +116,7 @@ class OsMediaHandler(MediaHandler):
         if self.m_mediaInfo:
             self._update_current_track()
             if (self._previousTrack != self._currentTrack): 
-                await self.fetchMediaThumbnail()
+                asyncio.create_task(self.fetchMediaThumbnail())
 
 
     def stop_monitoring(self):

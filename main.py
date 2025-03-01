@@ -31,6 +31,7 @@ async def main():
             currentState = config.TrackState.PAUSED_TRACK
         elif track and track != mh.getPreviousTrack():
             currentState = config.TrackState.NEW_TRACK
+            mh.setPreviousTrack(mh.getCurrentTrack())
         elif track and track == mh.getPreviousTrack():
             currentState = config.TrackState.UPDATE_IN_PROGRESS
 
