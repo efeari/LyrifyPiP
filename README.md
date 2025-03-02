@@ -10,8 +10,6 @@ LyrifyPiP is a desktop application that enhances your music listening experience
  ## Features
 ### Lyrics Display 
 Automatically shows lyrics of the currently playing song in a floating PiP window.
-### Multi-Platform Support 
-Compatible with various music players and streaming services.
 ### Customizable UI 
 Adjust the appearance and behavior of the PiP window to suit your preferences.
 ### Lightweight 
