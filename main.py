@@ -1,57 +1,10 @@
-import sys
-import sample.SpotifyHandler as SpotifyHandler
-import sample.LyricHandler as LyricHandler
-import sample.ScreenHandler as ScreenHandler
-import sample.config as config
-import sample.OsMediaHandler as OsMediaHandler
 import asyncio
+import sys
+import sample.LyrifyPiP as LyrifyPiP
 
 async def main():
-    # Init wifi access point
-    #sh = SpotifyHandler.SpotifyHandler();
-    lh = LyricHandler.LyricHandler()
-    print(sys.argv)
-    if len(sys.argv) > 1:
-        try:
-            print(f"Arguments passed: {sys.argv[1:]}")
-            screenHandler = ScreenHandler.ScreenHandler(int(sys.argv[1]), int(sys.argv[2]), config.BackgroundChoice(sys.argv[3]));
-        except ValueError:
-            print("Invalid screen dimensions provided")
-            return -1
-
-    else:
-        screenHandler = ScreenHandler.ScreenHandler();
-
-    async def on_track_change(track):
-        lyrics = lh.setCurrentTrack(track)
-        currentState = config.TrackState.NOT_PLAYING
-        if track == None:
-            currentState = config.TrackState.NOT_PLAYING
-        elif track and mh.isPlaying == False:
-            currentState = config.TrackState.PAUSED_TRACK
-        elif track and track != mh.getPreviousTrack():
-            currentState = config.TrackState.NEW_TRACK
-            mh.setPreviousTrack(mh.getCurrentTrack())
-        elif track and track == mh.getPreviousTrack():
-            currentState = config.TrackState.UPDATE_IN_PROGRESS
-
-        screenHandler.updateScreen(currentState, lyrics)
-        screenHandler.update()
-
-    async def on_albumcover_change():
-        screenHandler.updateAlbumCover()
-
-    mh =  OsMediaHandler.OsMediaHandler(on_track_change_callback=on_track_change, 
-                                        _on_albumcover_change_callback=on_albumcover_change)
-
-    try:
-        await mh.start_monitoring()
-    except KeyboardInterrupt:
-        mh.stop_monitoring()
-
-    # Start the main loop
-    #screenHandler.startMainLoop()
-
+    LyrifyPiP_app = LyrifyPiP.LyrifyPiP(sys.argv)
+    await LyrifyPiP_app.run()
     return 0
 
 if __name__ == "__main__":
