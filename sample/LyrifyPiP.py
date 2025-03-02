@@ -1,5 +1,3 @@
-import threading
-import asyncio
 import sample.LyricHandler as LyricHandler
 import sample.ScreenHandler as ScreenHandler
 import sample.config as config
