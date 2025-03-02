@@ -10,7 +10,7 @@ async def main():
     # Init wifi access point
     #sh = SpotifyHandler.SpotifyHandler();
     lh = LyricHandler.LyricHandler()
-    
+    print(sys.argv)
     if len(sys.argv) > 1:
         try:
             print(f"Arguments passed: {sys.argv[1:]}")
@@ -38,7 +38,11 @@ async def main():
         screenHandler.updateScreen(currentState, lyrics)
         screenHandler.update()
 
-    mh =  OsMediaHandler.OsMediaHandler(on_track_change_callback=on_track_change)
+    async def on_albumcover_change():
+        screenHandler.updateAlbumCover()
+
+    mh =  OsMediaHandler.OsMediaHandler(on_track_change_callback=on_track_change, 
+                                        _on_albumcover_change_callback=on_albumcover_change)
 
     try:
         await mh.start_monitoring()

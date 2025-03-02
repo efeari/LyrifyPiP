@@ -35,7 +35,7 @@ class ScreenHandler:
 
         # Create a black backgroung for startup
         self.m_img = Image.new('RGB', (self.m_screenWidth, self.m_screenHeight), "black")
-        self.m_img.save(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
+        self.m_img.save("TrackInfo\Background.png")
         # And set it as background
         self.m_canvas = tk.Canvas(self.m_root, width=self.m_screenWidth, height=self.m_screenHeight)
         self.m_canvas.pack(expand=True, fill=tk.BOTH)
@@ -124,7 +124,7 @@ class ScreenHandler:
         2.Sets the item as canvas
         3.Asks for a readable color
         """
-        self.m_img = Image.open(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
+        self.m_img = Image.open("TrackInfo\Background.png")
         self.m_img.putalpha(alphaValue)
         self.m_img = self.m_img.filter(ImageFilter.GaussianBlur(radius=10))
         self.m_img = self.m_img.resize((self.m_screenWidth, self.m_screenHeight), Image.ADAPTIVE)
@@ -146,7 +146,7 @@ class ScreenHandler:
         """
         if trackStatus == TrackState.NEW_TRACK:
             if self.m_backgroundChoice == BackgroundChoice.ALBUM_COVER:
-                self.updateAlbumCover()
+                #self.updateAlbumCover()
                 return
             elif self.m_backgroundChoice == BackgroundChoice.COLOR:
                 self.setRandomBackgrounColor()
@@ -205,7 +205,7 @@ class ScreenHandler:
         """
         randColor = tuple(choices(range(256), k=3))
         self.m_img = Image.new('RGB', (self.m_screenWidth, self.m_screenHeight), randColor)
-        self.m_img.save(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
+        self.m_img.save("TrackInfo\Background.png")
         self.m_albumImage = ImageTk.PhotoImage(self.m_img)
         self.m_canvas.itemconfig(self.m_imgContainer, image=self.m_albumImage)
         self.m_canvas.itemconfig(self.m_textContainer, text="", fill=self.suggestReadableTextColor())

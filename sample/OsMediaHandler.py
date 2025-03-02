@@ -15,14 +15,15 @@ elif system() == 'Linux':
     pass
 
 class OsMediaHandler(MediaHandler):
-    def __init__(self, on_track_change_callback=None):
+    def __init__(self, on_track_change_callback=None, _on_albumcover_change_callback=None):
         super().__init__()
         self.m_mediaInfo = None
         self.m_currentSession = None
         self._trackImg = None
         self._event_loop = asyncio.get_event_loop()
         self._timeline_changed_token = None
-        self._on_track_change_callback = on_track_change_callback  # Callback for main
+        self._on_track_change_callback = on_track_change_callback 
+        self._on_albumcover_change_callback = _on_albumcover_change_callback
 
     async def start_monitoring(self):
         asyncio.create_task(self._setup_session_manager())
@@ -89,7 +90,14 @@ class OsMediaHandler(MediaHandler):
         byte_buffer = buffer_reader.read_bytes(thumb_read_buffer.length)
         with BytesIO(bytearray(byte_buffer)) as binary:
             self._trackImg = Image.open(binary)
-            self._trackImg.save(r"C:\Users\efear\Documents\VS Code Projects\Umay\TrackInfo\Background.png")
+            self._trackImg.save("TrackInfo\Background.png")
+
+        # Notify main via callback
+        if self._on_albumcover_change_callback:
+            asyncio.run_coroutine_threadsafe(
+                self._on_albumcover_change_callback(), 
+                self._event_loop
+            )
 
     def _update_current_track(self):
         if not self.m_mediaInfo or not self.m_currentSession:
