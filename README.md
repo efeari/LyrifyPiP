@@ -1,32 +1,25 @@
 
 # LyrifyPiP
 
-LyrifyPiP is a small Python project whose aim is to create an always on top screen, where the lyrics from the currently playing song on Spotify are displayed
+LyrifyPiP is a desktop application that enhances your music listening experience by displaying lyrics of the currently playing song in a Picture-in-Picture (PiP) window. It is designed to work with various music sources and platforms, allowing you to view lyrics seamlessly while multitasking.
 
 ![image](https://github.com/user-attachments/assets/0421b284-25d0-47cf-ba07-07c94c464812)
 
 ![image](https://github.com/user-attachments/assets/ee54a3bf-fe0f-48ff-ba3e-54d0198a960e)
 
-## Description
+ ## Features
+### Lyrics Display 
+Automatically shows lyrics of the currently playing song in a floating PiP window.
+### Customizable UI 
+Adjust the appearance and behavior of the PiP window to suit your preferences.
+### Lightweight 
+Minimal resource usage for smooth performance across different systems.
 
-## Getting Started
-For the time being, users need to create their own app from https://developer.spotify.com/dashboard and use their own Client ID and Client Secret
+## Installation
 
-### Installing
-- Create your app from https://developer.spotify.com/dashboard
-- Create a virtual environment of your choice and enable it
-- Export your Client ID, Client Secret and Redirect URI in the virtual environment
-- Clone the repository to the desired location and open the folder by
-```
-$ git clone https://github.com/efeari/LyrifyPiP.git
-$ cd LyrifyPiP
-```
-- Install the required packages. A virtual environment is recommended for this step.
-```
-pip install -r requirements.txt
-```
+## Usage
+- Launch LyrifyPiP by running the application.
+- The app will automatically detect the currently playing song and display its lyrics in a PiP window.
 
-### Executing program
-```
-python main.py
-```
+### License
+LyrifyPiP is open-source software licensed under the MIT License.
