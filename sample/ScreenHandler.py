@@ -16,83 +16,83 @@ class ScreenHandler:
             defaultScreenHeight (int, optional): Screen heigth given by the user. Defaults to 0.
         """
         self.m_root = tk.Tk()
-        self.m_screenWidth = defaultScreenWidth
-        self.m_screenHeight = defaultScreenHeight
-        self.m_backgroundChoice = backgroundChoice
+        self.m_screen_width = defaultScreenWidth
+        self.m_screen_height = defaultScreenHeight
+        self.m_background_choice = backgroundChoice
 
-        if (self.m_screenWidth == 0 and self.m_screenHeight == 0):
+        if (self.m_screen_width == 0 and self.m_screen_height == 0):
             self.m_root.attributes('-fullscreen', True)
-            self.getCurrScreenGeometry()
-            self.m_screenWidth = self.m_root.winfo_screenwidth()
-            self.m_screenHeight = self.m_root.winfo_screenheight()
+            self.get_curr_screen_geometry()
+            self.m_screen_width = self.m_root.winfo_screenwidth()
+            self.m_screen_height = self.m_root.winfo_screenheight()
         else:
-            self.m_root.geometry("%dx%d" % (self.m_screenWidth, self.m_screenHeight))
+            self.m_root.geometry("%dx%d" % (self.m_screen_width, self.m_screen_height))
             self.m_root.overrideredirect(True)
             self.m_root.attributes("-topmost", True)
 
-        self.m_textSize = self.m_screenWidth // resolutionToTextRatio
-        self.m_root.protocol("WM_DELETE_WINDOW", self.onClosing)
+        self.m_textSize = self.m_screen_width // resolutionToTextRatio
+        self.m_root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         # Create a black backgroung for startup
-        self.m_img = Image.new('RGB', (self.m_screenWidth, self.m_screenHeight), "black")
+        self.m_img = Image.new('RGB', (self.m_screen_width, self.m_screen_height), "black")
         self.m_img.save("TrackInfo\Background.png")
         # And set it as background
-        self.m_canvas = tk.Canvas(self.m_root, width=self.m_screenWidth, height=self.m_screenHeight)
+        self.m_canvas = tk.Canvas(self.m_root, width=self.m_screen_width, height=self.m_screen_height)
         self.m_canvas.pack(expand=True, fill=tk.BOTH)
-        self.m_albumImage = ImageTk.PhotoImage(self.m_img)
-        self.m_imgContainer = self.m_canvas.create_image(0, 0, image=self.m_albumImage, anchor=tk.NW)
+        self.m_album_image = ImageTk.PhotoImage(self.m_img)
+        self.m_img_container = self.m_canvas.create_image(0, 0, image=self.m_album_image, anchor=tk.NW)
 
         # Create the text container
-        self.m_textContainer = self.m_canvas.create_text(self.m_screenWidth/2, self.m_screenHeight/2, text="",font=("Purisa", self.m_textSize), width=self.m_screenWidth)
+        self.m_text_container = self.m_canvas.create_text(self.m_screen_width/2, self.m_screen_height/2, text="",font=("Purisa", self.m_textSize), width=self.m_screen_width)
         
-        self.m_NoneReceived = False
+        self.m_none_received = False
 
         self.m_root.bind("<B1-Motion>", lambda event:  self.m_root.geometry(f'+{event.x_root}+{event.y_root}'))
 
-        self.createCloseButton()
+        self.create_close_button()
 
-    def getBackgroundChoice(self) -> BackgroundChoice:
-        return self.m_backgroundChoice
+    def get_background_choice(self) -> BackgroundChoice:
+        return self.m_background_choice
     
-    def startMainLoop(self):
+    def start_main_loop(self):
         self.m_root.mainloop()
 
     def update(self):
         self.m_root.update_idletasks()
         self.m_root.update()
 
-    def createCloseButton(self):
+    def create_close_button(self):
         """
         Creates an close button which becomes visible when hovered on the window only
         """
         icon_size = 15 
         padding = 10
 
-        x1 = self.m_screenWidth - icon_size - padding
+        x1 = self.m_screen_width - icon_size - padding
         y1 = padding
-        x2 = self.m_screenWidth - padding
+        x2 = self.m_screen_width - padding
         y2 = icon_size + padding
 
         self.line1 = self.m_canvas.create_line(x1, y1, x2, y2, width=2, state=tk.HIDDEN)
         self.line2 = self.m_canvas.create_line(x1, y2, x2, y1, width=2, state=tk.HIDDEN)
 
-        self.m_canvas.tag_bind(self.line1, "<Button-1>", lambda event: self.onClosing())
-        self.m_canvas.tag_bind(self.line2, "<Button-1>", lambda event: self.onClosing())
+        self.m_canvas.tag_bind(self.line1, "<Button-1>", lambda event: self.on_closing())
+        self.m_canvas.tag_bind(self.line2, "<Button-1>", lambda event: self.on_closing())
 
-        self.m_canvas.bind("<Enter>", self.showIcon)
-        self.m_canvas.bind("<Leave>", self.hideIcon)
+        self.m_canvas.bind("<Enter>", self.show_icon)
+        self.m_canvas.bind("<Leave>", self.hide_icon)
 
-    def showIcon(self, event):
+    def show_icon(self, event):
         """Make the 'X' icon visible."""
         self.m_canvas.itemconfig(self.line1, state=tk.NORMAL)
         self.m_canvas.itemconfig(self.line2, state=tk.NORMAL)
 
-    def hideIcon(self, event):
+    def hide_icon(self, event):
         """Make the 'X' icon invisible."""
         self.m_canvas.itemconfig(self.line1, state=tk.HIDDEN)
         self.m_canvas.itemconfig(self.line2, state=tk.HIDDEN)
 
-    def onClosing(self):
+    def on_closing(self):
         """
         Destroys the m_root
 
@@ -102,7 +102,7 @@ class ScreenHandler:
         self.m_root.destroy()
         raise SystemExit
     
-    def getCurrScreenGeometry(self):
+    def get_curr_screen_geometry(self):
         """
         Workaround to get the size of the current screen in a multi-screen setup.
         https://stackoverflow.com/questions/3129322/how-do-i-get-monitor-resolution-in-python/56913005#56913005
@@ -115,7 +115,7 @@ class ScreenHandler:
         self.m_root.geometry = root.winfo_geometry()
         root.destroy()
     
-    def updateAlbumCover(self):
+    def update_album_cover(self):
         """
         Updates the album cover on the display if a new track is found or
         updates the lyrics displayed
@@ -127,13 +127,13 @@ class ScreenHandler:
         self.m_img = Image.open("TrackInfo\Background.png")
         self.m_img.putalpha(alphaValue)
         self.m_img = self.m_img.filter(ImageFilter.GaussianBlur(radius=10))
-        self.m_img = self.m_img.resize((self.m_screenWidth, self.m_screenHeight), Image.ADAPTIVE)
-        self.m_albumImage = ImageTk.PhotoImage(self.m_img)
-        self.m_canvas.itemconfig(self.m_imgContainer, image=self.m_albumImage)
-        self.m_canvas.itemconfig(self.m_textContainer, text="", fill=self.suggestReadableTextColor())
+        self.m_img = self.m_img.resize((self.m_screen_width, self.m_screen_height), Image.ADAPTIVE)
+        self.m_album_image = ImageTk.PhotoImage(self.m_img)
+        self.m_canvas.itemconfig(self.m_img_container, image=self.m_album_image)
+        self.m_canvas.itemconfig(self.m_text_container, text="", fill=self.suggest_readable_text_color())
         return
     
-    def updateScreen(self, trackStatus, lyric):
+    def update_screen(self, trackStatus, lyric):
         """
         Based on the trackStatus, it updates the screen
 
@@ -145,20 +145,20 @@ class ScreenHandler:
             lyric (_type_): _description_
         """
         if trackStatus == TrackState.NEW_TRACK:
-            if self.m_backgroundChoice == BackgroundChoice.ALBUM_COVER:
-                #self.updateAlbumCover()
+            if self.m_background_choice == BackgroundChoice.ALBUM_COVER:
+                #self.update_album_cover()
                 return
-            elif self.m_backgroundChoice == BackgroundChoice.COLOR:
-                self.setRandomBackgrounColor()
+            elif self.m_background_choice == BackgroundChoice.COLOR:
+                self.set_random_backgroung_color()
                 if lyric is not None:
-                    self.m_canvas.itemconfig(self.m_textContainer, text=lyric)
+                    self.m_canvas.itemconfig(self.m_text_container, text=lyric)
         elif trackStatus == TrackState.UPDATE_IN_PROGRESS:
-            if lyric is None and self.m_NoneReceived == False:
+            if lyric is None and self.m_none_received == False:
                 lyric = ""
-                self.m_canvas.itemconfig(self.m_textContainer, text=lyric)
-                self.m_NoneReceived = True
+                self.m_canvas.itemconfig(self.m_text_container, text=lyric)
+                self.m_none_received = True
             elif lyric is not None:
-                self.m_canvas.itemconfig(self.m_textContainer, text=lyric)
+                self.m_canvas.itemconfig(self.m_text_container, text=lyric)
             return
         elif trackStatus == TrackState.PAUSED_TRACK:
             return
@@ -166,7 +166,7 @@ class ScreenHandler:
             return
 
 
-    def getDominantColor(self):
+    def get_dominant_color(self):
         """
         Calculates the dominant color of the associated image.
 
@@ -180,7 +180,7 @@ class ScreenHandler:
         dominant_color = img.getpixel((0, 0))
         return dominant_color
     
-    def suggestReadableTextColor(self):
+    def suggest_readable_text_color(self):
         """
         Suggests a readable text color (black or white) based on the dominant color 
         of an associated image or background. Based on:
@@ -189,7 +189,7 @@ class ScreenHandler:
         Returns:
             tuple[3]: A hexadecimal color code representing the suggested text color 
         """
-        dominant_color = self.getDominantColor()
+        dominant_color = self.get_dominant_color()
         # Calculate perceptive luminance (normalized to 1)
         luminance = (0.299 * dominant_color[0] + 0.587 * dominant_color[1] + 0.114 * dominant_color[2]) / 255
         # Determine the contrasting color
@@ -198,15 +198,15 @@ class ScreenHandler:
         
         return suggestedColorHex
 
-    def setRandomBackgrounColor(self):
+    def set_random_backgroung_color(self):
         """
         A function to generate a random RGB color and set it as background
 
         """
         randColor = tuple(choices(range(256), k=3))
-        self.m_img = Image.new('RGB', (self.m_screenWidth, self.m_screenHeight), randColor)
+        self.m_img = Image.new('RGB', (self.m_screen_width, self.m_screen_height), randColor)
         self.m_img.save("TrackInfo\Background.png")
-        self.m_albumImage = ImageTk.PhotoImage(self.m_img)
-        self.m_canvas.itemconfig(self.m_imgContainer, image=self.m_albumImage)
-        self.m_canvas.itemconfig(self.m_textContainer, text="", fill=self.suggestReadableTextColor())
+        self.m_album_image = ImageTk.PhotoImage(self.m_img)
+        self.m_canvas.itemconfig(self.m_img_container, image=self.m_album_image)
+        self.m_canvas.itemconfig(self.m_text_container, text="", fill=self.suggest_readable_text_color())
 

@@ -7,7 +7,7 @@ class MediaHandler:
         self._previousTrack = None  # To track changes
         pass
     
-    def getCurrentTrack(self):
+    def get_current_track(self):
         """
         Getter for the _currentTrack
 
@@ -16,7 +16,7 @@ class MediaHandler:
         """
         return self._currentTrack
     
-    def setCurrentTrack(self, newTrack: Track):
+    def set_current_track(self, newTrack: Track):
         """
         Setter for the _current track
 
@@ -25,7 +25,7 @@ class MediaHandler:
         """
         self._currentTrack = newTrack
 
-    def getPreviousTrack(self):
+    def get_previous_track(self):
         """
         Getter for the _prev
 
@@ -34,7 +34,7 @@ class MediaHandler:
         """
         return self._previousTrack
     
-    def setPreviousTrack(self, previousTrack: Track):
+    def set_previous_track(self, previousTrack: Track):
         """
         Setter for the _prev track
 
@@ -44,10 +44,10 @@ class MediaHandler:
         if (self._previousTrack != previousTrack):
             self._previousTrack = previousTrack
 
-    def fetchNewTrack(self):
+    def fetch_new_track(self):
         raise NotImplementedError()
     
-    def checkTrackStatus(self, setCover: BackgroundChoice):
+    def check_track_status(self, setCover: BackgroundChoice):
         raise NotImplementedError()
     
     

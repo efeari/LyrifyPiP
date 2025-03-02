@@ -11,7 +11,7 @@ class LyricHandler:
         self._currentTrack = Track(None, None, None, None, None, None)
         self.m_trackFound = False
 
-    def setCurrentTrack(self, newTrack):
+    def set_current_track(self, newTrack):
         # If the user changed the song, we need to reparse all the lyrics
         if self._currentTrack != newTrack:
             self._currentTrack = newTrack

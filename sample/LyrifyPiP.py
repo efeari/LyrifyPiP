@@ -21,24 +21,24 @@ class LyrifyPiP:
                                         _on_albumcover_change_callback=self.on_albumcover_change)
 
     async def on_track_change(self, track):
-        lyrics = self.lyric_handler.setCurrentTrack(track)
-        currentState = config.TrackState.NOT_PLAYING
+        lyrics = self.lyric_handler.set_current_track(track)
+        current_state = config.TrackState.NOT_PLAYING
         if track == None:
-            currentState = config.TrackState.NOT_PLAYING
-        elif track and self.media_handler.isPlaying == False:
-            currentState = config.TrackState.PAUSED_TRACK
-        elif track and track != self.media_handler.getPreviousTrack():
-            currentState = config.TrackState.NEW_TRACK
-            self.media_handler.setPreviousTrack(self.media_handler.getCurrentTrack())
-        elif track and track == self.media_handler.getPreviousTrack():
-            currentState = config.TrackState.UPDATE_IN_PROGRESS
+            current_state = config.TrackState.NOT_PLAYING
+        elif track and self.media_handler.is_playing == False:
+            current_state = config.TrackState.PAUSED_TRACK
+        elif track and track != self.media_handler.get_previous_track():
+            current_state = config.TrackState.NEW_TRACK
+            self.media_handler.set_previous_track(self.media_handler.get_current_track())
+        elif track and track == self.media_handler.get_previous_track():
+            current_state = config.TrackState.UPDATE_IN_PROGRESS
 
-        self.screen_handler.updateScreen(currentState, lyrics)
+        self.screen_handler.update_screen(current_state, lyrics)
         self.screen_handler.update()
 
     async def on_albumcover_change(self):
-        if (self.screen_handler.getBackgroundChoice == config.BackgroundChoice.ALBUM_COVER):
-            self.screen_handler.updateAlbumCover()
+        if (self.screen_handler.get_background_choice == config.BackgroundChoice.ALBUM_COVER):
+            self.screen_handler.update_album_cover()
 
     async def run(self):
         try:
