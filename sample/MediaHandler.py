@@ -50,4 +50,6 @@ class MediaHandler:
     def check_track_status(self, setCover: BackgroundChoice):
         raise NotImplementedError()
     
+    async def start_monitoring(self):
+        raise NotImplementedError()
     

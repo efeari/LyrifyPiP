@@ -19,14 +19,15 @@ class LyrifyPiP:
             self.screen_handler = ScreenHandler.ScreenHandler()
 
         if system() == 'Windows':
-            self.lyric_handler = LyricHandler.LyricHandler()
+            self.media_handler = WinMediaHandler.WinMediaHandler(on_track_change_callback=self.on_track_change, 
+                                        _on_albumcover_change_callback=self.on_albumcover_change)
         elif system() == 'Linux':
             pass
         else:
             raise NotImplementedError(f"Unsupported OS: {system()}")
         
-        self.media_handler = WinMediaHandler.WinMediaHandler(on_track_change_callback=self.on_track_change, 
-                                        _on_albumcover_change_callback=self.on_albumcover_change)
+        self.lyric_handler = LyricHandler.LyricHandler()
+        
 
     async def on_track_change(self, track):
         lyrics = self.lyric_handler.set_current_track(track)
