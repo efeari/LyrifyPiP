@@ -3,18 +3,13 @@ from .MediaHandler import MediaHandler as MediaHandler
 from .Track import Track
 from .config import *
 import asyncio
+from winrt.windows.media.control import \
+    GlobalSystemMediaTransportControlsSessionManager as MediaManager
+from winrt.windows.storage.streams import DataReader, Buffer, InputStreamOptions
+from io import BytesIO
+from PIL import Image
 
-if system() == 'Windows':
-    from winrt.windows.media.control import \
-        GlobalSystemMediaTransportControlsSessionManager as MediaManager
-    from winrt.windows.storage.streams import DataReader, Buffer, InputStreamOptions
-    from io import BytesIO
-    from PIL import Image
-
-elif system() == 'Linux':
-    pass
-
-class OsMediaHandler(MediaHandler):
+class WinMediaHandler(MediaHandler):
     def __init__(self, on_track_change_callback=None, _on_albumcover_change_callback=None):
         super().__init__()
         self._m_mediaInfo = None

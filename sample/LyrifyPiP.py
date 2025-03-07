@@ -1,7 +1,9 @@
+from platform import system
+
 import sample.LyricHandler as LyricHandler
 import sample.ScreenHandler as ScreenHandler
 import sample.config as config
-import sample.OsMediaHandler as OsMediaHandler
+import LyrifyPiP.sample.WinMediaHandler as WinMediaHandler
 from .config import *
 
 class LyrifyPiP:
@@ -15,9 +17,15 @@ class LyrifyPiP:
                 return -1
         else:
             self.screen_handler = ScreenHandler.ScreenHandler()
+
+        if system() == 'Windows':
+            self.lyric_handler = LyricHandler.LyricHandler()
+        elif system() == 'Linux':
+            pass
+        else:
+            raise NotImplementedError(f"Unsupported OS: {system()}")
         
-        self.lyric_handler = LyricHandler.LyricHandler()
-        self.media_handler = OsMediaHandler.OsMediaHandler(on_track_change_callback=self.on_track_change, 
+        self.media_handler = WinMediaHandler.WinMediaHandler(on_track_change_callback=self.on_track_change, 
                                         _on_albumcover_change_callback=self.on_albumcover_change)
 
     async def on_track_change(self, track):
