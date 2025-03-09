@@ -6,7 +6,7 @@ BackgroundChoice = Enum('BackgroundChoice', ['ALBUM_COVER', 'COLOR'])
 alphaValue = 200
 resolutionToTextRatio = 30
 
-CONST_DEFAULT_UPDATE_TRACK_FREQUENCY = 0.3
+CONST_DEFAULT_UPDATE_TRACK_FREQUENCY = 2
 CONST_LYRICS_PROVIDER = "Musixmatch"
 
 

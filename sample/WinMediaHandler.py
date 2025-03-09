@@ -1,24 +1,22 @@
 from platform import system
-from .MediaHandler import MediaHandler as MediaHandler
-from .Track import Track
-from .config import *
 import asyncio
-from winrt.windows.media.control import \
-    GlobalSystemMediaTransportControlsSessionManager as MediaManager
-from winrt.windows.storage.streams import DataReader, Buffer, InputStreamOptions
+if system() == 'Windows':
+    from winrt.windows.media.control import \
+        GlobalSystemMediaTransportControlsSessionManager as MediaManager
+    from winrt.windows.storage.streams import DataReader, Buffer, InputStreamOptions
 from io import BytesIO
 from PIL import Image
 
+from .MediaHandler import MediaHandler as MediaHandler
+from .Track import Track
+from .config import *
+
 class WinMediaHandler(MediaHandler):
     def __init__(self, on_track_change_callback=None, _on_albumcover_change_callback=None):
-        super().__init__()
+        super().__init__(on_track_change_callback, _on_albumcover_change_callback)
         self._m_mediaInfo = None
         self._m_current_session = None
-        self._track_img = None
-        self._event_loop = asyncio.get_event_loop()
         self._timeline_changed_token = None
-        self._on_track_change_callback = on_track_change_callback 
-        self._on_albumcover_change_callback = _on_albumcover_change_callback
 
     async def start_monitoring(self):
         asyncio.create_task(self._setup_session_manager())

@@ -1,10 +1,17 @@
+import asyncio
+
 from .Track import Track
 from .config import *
 
 class MediaHandler:
-    def __init__(self):
+    def __init__(self, on_track_change_callback, _on_albumcover_change_callback):
         self._currentTrack = Track(None, None, None, None, None, None)
         self._previousTrack = None  # To track changes
+        self._on_track_change_callback = on_track_change_callback 
+        self._on_albumcover_change_callback = _on_albumcover_change_callback
+        self._track_img = None
+        self._event_loop = asyncio.get_event_loop()
+        self.is_playing = False
         pass
     
     def get_current_track(self):
@@ -52,4 +59,10 @@ class MediaHandler:
     
     async def start_monitoring(self):
         raise NotImplementedError()
+    
+    def stop_monitoring(self):
+        raise NotImplementedError()
+
+    def __del__(self):
+        self.stop_monitoring()
     
