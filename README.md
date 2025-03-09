@@ -3,10 +3,6 @@
 
 A cross-platform desktop application that displays synchronized lyrics for currently playing music in a Picture-in-Picture (PiP) window. Supports both Windows Media Controls and Linux playerctl for system-wide music detection.
 
-![image](https://github.com/user-attachments/assets/0421b284-25d0-47cf-ba07-07c94c464812)
-
-![image](https://github.com/user-attachments/assets/ee54a3bf-fe0f-48ff-ba3e-54d0198a960e)
-
 ## How it works
 ### Media Detection System
 
@@ -48,6 +44,10 @@ A cross-platform desktop application that displays synchronized lyrics for curre
 * Automatically adjusts text color for readability
 * Shows/hides close button on hover
 * Updates lyrics display in real-time
+
+![image](https://github.com/user-attachments/assets/0421b284-25d0-47cf-ba07-07c94c464812)
+
+![image](https://github.com/user-attachments/assets/ee54a3bf-fe0f-48ff-ba3e-54d0198a960e)
 
 ## Installation
 
