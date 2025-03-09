@@ -1,7 +1,7 @@
 
 # LyrifyPiP
 
-LyrifyPiP is a desktop application that enhances your music listening experience by displaying lyrics of the currently playing song in a Picture-in-Picture (PiP) window. It is designed to work with various music sources and platforms, allowing you to view lyrics seamlessly while multitasking.
+A cross-platform desktop application that displays synchronized lyrics for currently playing music in a Picture-in-Picture (PiP) window. Supports both Windows Media Controls and Linux playerctl for system-wide music detection.
 
 ![image](https://github.com/user-attachments/assets/0421b284-25d0-47cf-ba07-07c94c464812)
 
@@ -10,10 +10,20 @@ LyrifyPiP is a desktop application that enhances your music listening experience
 ## How it works
 ### Media Detection System
 
-* Uses Windows Media Control API to monitor system-wide media playback
 * Prioritizes Spotify over other media players when multiple sources are playing
-* Tracks media session changes through an event-based system
 * Automatically detects song changes and playback status
+
+#### Windows
+
+* Uses Windows Media Control API to monitor system-wide media playback
+* Tracks media session changes through events
+
+#### Linux
+
+* Integrates with playerctl for media control and metadata access
+* Uses subprocess to monitor media players through playerctl commands
+* Supports any MPRIS-compatible media player (Spotify, VLC, etc.)
+* Continuously monitors playback status and metadata changes
 
 ### Callback Chain
 #### Timeline Properties Changed Event
