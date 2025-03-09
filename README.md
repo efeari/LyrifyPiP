@@ -25,12 +25,12 @@ A cross-platform desktop application that displays synchronized lyrics for curre
 * Supports any MPRIS-compatible media player (Spotify, VLC, etc.)
 * Continuously monitors playback status and metadata changes
 
-### Callback Chain
-#### Timeline Properties Changed Event
+### Event Chain
+#### Timeline Properties Changed Event (For Windows)
 * Windows Media Control triggers events when media properties change
 * Events include track changes, playback position updates, and metadata changes
 
-#### Media Handler Callbacks
+#### Media Handler Callbacks (For Windows)
 * Processes raw media events
 * Extracts track information (title, artist, album art)
 * Notifies the main application through registered callbacks
