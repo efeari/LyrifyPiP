@@ -55,9 +55,12 @@ A cross-platform desktop application that displays synchronized lyrics for curre
 - Launch LyrifyPiP by running the application.
 - The app will automatically detect the currently playing song and display its lyrics in a PiP window.
 
-### Resources
+## ToDo
+
+## Resources
 
 * https://github.com/altdesktop/playerctl
+* https://github.com/moehmeni/syncedlyrics
 
-### License
+## License
 LyrifyPiP is open-source software licensed under the MIT License.
